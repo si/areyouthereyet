@@ -28,6 +28,7 @@
     	}, interval);
     }
     
+    // Source: http://davidwalsh.name/battery-api
     var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
     
     // A few useful battery properties
@@ -35,21 +36,36 @@
     console.warn("Battery level: ", battery.level); // 0.58
     console.warn("Battery discharging time: ", battery.dischargingTime);
     
-    $('meter.battery').attr('value', battery.level*100).text( battery.level*100 +'%' );
-    $('.battery-remaining time').text( battery.dischargingTime / 1000 );
+    var updateBatteryMeter = function() {
+
+      var batteryMinutes, batteryHours;
+
+      batteryMinutes = battery.dischargingTime / 60;
+      batteryHours = Math.floor(batteryMinutes / 60);
+      batteryMinutes = batteryMinutes - (batteryHours * 60);
+  
+      $('meter.battery').attr('value', battery.level*100).text( battery.level*100 +'%' );
+      $('.battery-remaining time').text( batteryHours + ' hours ' + batteryMinutes + ' minutes' );
+      
+    };
+    
     
     // Add a few event listeners
     battery.addEventListener("chargingchange", function(e) {
-    	console.warn("Battery charge change: ", battery.charging);
+    	console.debug("Battery charge change: ", battery.charging);
+      updateBatteryMeter();
     }, false);
     battery.addEventListener("chargingtimechange", function(e) {
-    	console.warn("Battery charge time change: ", battery.chargingTime);
+    	console.debug("Battery charge time change: ", battery.chargingTime);
+      updateBatteryMeter();
     }, false);
     battery.addEventListener("dischargingtimechange", function(e) {
-    	console.warn("Battery discharging time change: ", battery.dischargingTime);
+    	console.debug("Battery discharging time change: ", battery.dischargingTime);
+      updateBatteryMeter();
     }, false);
     battery.addEventListener("levelchange", function(e) {
-    	console.warn("Battery level change: ", battery.level);
+    	console.debug("Battery level change: ", battery.level);
+      updateBatteryMeter();
     }, false);
     
     $('button.vibrate').on('click', start(1000));
