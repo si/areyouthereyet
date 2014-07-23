@@ -38,14 +38,24 @@
     
     var updateBatteryMeter = function() {
 
+      $('meter.battery').attr('value', battery.level*100).text( battery.level*100 +'%' );
+      
+    };
+    
+    var updateBatteryTime = function() {
+
       var batteryMinutes, batteryHours;
 
-      batteryMinutes = battery.dischargingTime / 60;
-      batteryHours = Math.floor(batteryMinutes / 60);
-      batteryMinutes = batteryMinutes - (batteryHours * 60);
-  
-      $('meter.battery').attr('value', battery.level*100).text( battery.level*100 +'%' );
-      $('.battery-remaining time').text( batteryHours + ' hours ' + batteryMinutes + ' minutes' );
+      if(isNaN(battery.dischargingTime)) {
+        $('.battery-remaining time').text( 'plugged in' );
+      } else {
+        batteryMinutes = battery.dischargingTime / 60;
+        batteryHours = Math.floor(batteryMinutes / 60);
+        batteryMinutes = batteryMinutes - (batteryHours * 60);
+    
+        $('.battery-remaining time').text( batteryHours + ' hours ' + batteryMinutes + ' minutes' );
+        
+      }
       
     };
     
@@ -73,17 +83,17 @@
     	console.debug("Battery charge change: ", battery.charging);
       updateBatteryMeter();
     }, false);
-    battery.addEventListener("chargingtimechange", function(e) {
-    	console.debug("Battery charge time change: ", battery.chargingTime);
-      updateBatteryMeter();
-    }, false);
-    battery.addEventListener("dischargingtimechange", function(e) {
-    	console.debug("Battery discharging time change: ", battery.dischargingTime);
-      updateBatteryMeter();
-    }, false);
     battery.addEventListener("levelchange", function(e) {
     	console.debug("Battery level change: ", battery.level);
       updateBatteryMeter();
+    }, false);
+    battery.addEventListener("chargingtimechange", function(e) {
+    	console.debug("Battery charge time change: ", battery.chargingTime);
+      updateBatteryTime();
+    }, false);
+    battery.addEventListener("dischargingtimechange", function(e) {
+    	console.debug("Battery discharging time change: ", battery.dischargingTime);
+      updateBatteryTime();
     }, false);
     
     window.addEventListener('devicelight', function(e){
