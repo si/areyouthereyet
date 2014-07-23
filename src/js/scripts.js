@@ -51,18 +51,21 @@
     
     var updateLuminosity = function(lux) {
     
-      var brightness;
+      var description;
       
       if( lux < 50 ) {
-        brightness = 'dark';
+        description = 'dark';
         
       } else if( lux > 50 && lux <= 1000 ) {
-        brightness = 'normal';
+        description = 'normal';
         
       } else {
-        brightness = 'bright';
+        description = 'bright';
       }
-      $('.luminosity').html(brightness + ' (' + lux + ')');
+      
+      $('.luminosity').html(description);
+      $('meter.brightness').attr('value', lux);
+      
     };
     
     // Add a few event listeners
