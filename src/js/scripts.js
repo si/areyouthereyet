@@ -49,6 +49,21 @@
       
     };
     
+    var updateLuminosity = function(lux) {
+    
+      var brightness;
+      
+      if( lux < 50 ) {
+        brightness = 'dark';
+        
+      } else if( lux > 50 && lux <= 1000 ) {
+        brightness = 'normal';
+        
+      } else {
+        brightness = 'bright';
+      }
+      $('.luminosity').html(brightness + ' (' + lux + ')');
+    };
     
     // Add a few event listeners
     battery.addEventListener("chargingchange", function(e) {
@@ -68,6 +83,15 @@
       updateBatteryMeter();
     }, false);
     
+    window.addEventListener('devicelight', function(e){
+      var lux = e.value;
+      console.debug("Light changed: ", lux);
+      updateLuminosity(lux);
+    });
+
+
+
+
     $('button.vibrate').on('click', start(1000));
 
   });
